@@ -1,12 +1,14 @@
 import { base64Encode, stringDigest } from "./common.js";
 
-/** @type HTMLButtonElement */
-const submitButton = document.getElementById("submit");
+const submitButton = /** @type {HTMLButtonElement} */ (
+	document.getElementById("submit")
+);
 submitButton.addEventListener("click", generateLink);
 
 async function generateLink() {
-	/** @type HTMLTextAreaElement */
-	const messageElement = document.getElementById("message");
+	const messageElement = /** @type {HTMLTextAreaElement} */ (
+		document.getElementById("message")
+	);
 	if (messageElement.value.length === 0) {
 		return;
 	}
@@ -27,8 +29,9 @@ async function generateLink() {
 		iv: encryptedData.iv,
 	});
 
-	/** @type HTMLDivElement */
-	const keyDisplay = document.getElementById("generatedUrl");
+	const keyDisplay = /** @type {HTMLDivElement} */ (
+		document.getElementById("generatedUrl")
+	);
 	keyDisplay.innerText = `${window.location.protocol}//${window.location.host}/view#${urlSafeKey}`;
 }
 

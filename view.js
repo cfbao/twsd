@@ -22,8 +22,9 @@ async function init() {
 		iv: "",
 	});
 
-	/** @type HTMLTextAreaElement */
-	const messageDisplay = document.getElementById("message");
+	const messageDisplay = /** @type {HTMLTextAreaElement} */ (
+		document.getElementById("message")
+	);
 	messageDisplay.value = plaintext;
 }
 
