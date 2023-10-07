@@ -25,8 +25,41 @@ provider "aws" {
   }
 }
 
+provider "aws" {
+  region = "us-east-1"
+  alias  = "us-east-1"
+
+  default_tags {
+    tags = {
+      Terraform = "https://github.com/cfbao/twsd"
+    }
+  }
+}
+
+locals {
+  service_name = "twsd"
+  domain_name  = "twsd.cfbao.me"
+}
+
+data "aws_route53_zone" "dns_zone" {
+  name = "cfbao.me"
+}
+
 module "backend" {
   source = "./backend"
 
-  service_name = "twsd"
+  service_name = local.service_name
+}
+
+module "cdn" {
+  source = "./cdn"
+
+  providers = {
+    aws = aws.us-east-1
+  }
+
+  service_name    = local.service_name
+  domain_name     = local.domain_name
+  dns_zone        = data.aws_route53_zone.dns_zone
+  api_gateway_url = module.backend.api_gateway_url
 }
