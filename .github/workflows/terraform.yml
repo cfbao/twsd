@@ -1,0 +1,57 @@
+name: terraform
+
+on:
+  push:
+    paths:
+      - .github/workflows/terraform.yml
+      - terraform/**
+  workflow_dispatch:
+    inputs:
+      command:
+        description: The Terraform command to run
+        type: choice
+        required: true
+        options:
+          - plan
+          - apply
+
+defaults:
+  run:
+    working-directory: terraform
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ">=1.6.0 <2.0.0"
+          terraform_wrapper: false
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-2
+          role-to-assume: |
+            ${{ (
+              github.ref == 'refs/heads/main'
+              && 'arn:aws:iam::340554939768:role/terraform-apply'
+              || 'arn:aws:iam::340554939768:role/terraform-plan'
+            ) }}
+
+      - name: plan
+        if: github.ref != 'refs/heads/main' || inputs.command == 'plan'
+        run: |
+          terraform init
+          terraform plan
+
+      - name: apply
+        if: github.ref == 'refs/heads/main' && inputs.command != 'plan'
+        run: |
+          terraform init -backend-config="dynamodb_table=terraform-state-lock"
+          terraform apply -auto-approve
