@@ -35,3 +35,17 @@ jobs:
 
       - name: build
         run: dotnet publish -o output Chenfeng.Twsd.Api
+
+      - if: github.ref == 'refs/heads/main' && inputs.command != 'build-only'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-2
+          role-to-assume: arn:aws:iam::340554939768:role/app-deployer
+
+      - name: deploy
+        if: github.ref == 'refs/heads/main' && inputs.command != 'build-only'
+        run: |
+          cd output
+          zip ../lambda.zip bootstrap
+          cd ..
+          aws lambda update-function-code --function-name twsd-api --zip-file "fileb://$(realpath lambda.zip)"
