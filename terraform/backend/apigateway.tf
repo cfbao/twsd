@@ -22,9 +22,10 @@ resource "aws_apigatewayv2_route" "api_route" {
 }
 
 resource "aws_apigatewayv2_integration" "api_lambda" {
-  api_id               = aws_apigatewayv2_api.api.id
-  integration_type     = "AWS_PROXY"
-  integration_uri      = aws_lambda_function.api.invoke_arn
-  integration_method   = "POST"
-  timeout_milliseconds = 3000
+  api_id                 = aws_apigatewayv2_api.api.id
+  integration_type       = "AWS_PROXY"
+  integration_uri        = aws_lambda_function.api.invoke_arn
+  integration_method     = "POST"
+  timeout_milliseconds   = 3000
+  payload_format_version = "2.0"
 }
