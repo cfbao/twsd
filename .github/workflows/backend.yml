@@ -1,0 +1,37 @@
+name: backend
+
+on:
+  push:
+    paths:
+      - .github/workflows/backend.yml
+      - backend/**
+  workflow_dispatch:
+    inputs:
+      command:
+        description: Build only or deploy
+        type: choice
+        required: true
+        options:
+          - build-only
+          - build-and-deploy
+
+defaults:
+  run:
+    working-directory: backend
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: build
+        run: dotnet publish -o output Chenfeng.Twsd.Api
