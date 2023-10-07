@@ -1,7 +1,3 @@
-variable "service_name" {
-  type = string
-}
-
 resource "aws_lambda_function" "api" {
   function_name = "${var.service_name}-api"
   runtime       = "provided.al2"
@@ -62,4 +58,13 @@ data "aws_iam_policy_document" "lambda_permissions" {
 resource "aws_cloudwatch_log_group" "api" {
   name              = "/aws/lambda/${var.service_name}-api"
   retention_in_days = 180
+}
+
+resource "aws_lambda_permission" "api_lambda_gateway_invoke" {
+  statement_id   = "ApiGatewayInvoke"
+  function_name  = aws_lambda_function.api.function_name
+  principal      = "apigateway.amazonaws.com"
+  action         = "lambda:InvokeFunction"
+  source_arn     = "${aws_apigatewayv2_api.api.execution_arn}/*"
+  source_account = data.aws_caller_identity.current.account_id
 }
