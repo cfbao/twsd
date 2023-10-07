@@ -24,3 +24,9 @@ provider "aws" {
     }
   }
 }
+
+module "backend" {
+  source = "./backend"
+
+  service_name = "twsd"
+}
