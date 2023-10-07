@@ -15,10 +15,6 @@ on:
           - build-only
           - build-and-deploy
 
-defaults:
-  run:
-    working-directory: backend
-
 jobs:
   backend:
     runs-on: ubuntu-latest
@@ -29,12 +25,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x'
+      - uses: docker/setup-buildx-action@v3
 
       - name: build
-        run: dotnet publish -o output Chenfeng.Twsd.Api
+        run: |
+          docker buildx build \
+            --output "${RUNNER_TEMP}" \
+            backend/Chenfeng.Twsd.Api
 
       - if: github.ref == 'refs/heads/main' && inputs.command != 'build-only'
         uses: aws-actions/configure-aws-credentials@v4
@@ -44,8 +41,9 @@ jobs:
 
       - name: deploy
         if: github.ref == 'refs/heads/main' && inputs.command != 'build-only'
+        working-directory: ${{ runner.temp }}
         run: |
-          cd output
-          zip ../lambda.zip bootstrap
-          cd ..
-          aws lambda update-function-code --function-name twsd-api --zip-file "fileb://$(realpath lambda.zip)"
+          zip package.zip bootstrap
+          aws lambda update-function-code \
+            --function-name twsd-api \
+            --zip-file "fileb://${RUNNER_TEMP}/package.zip"
