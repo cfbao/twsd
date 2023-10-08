@@ -1,8 +1,11 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Amazon.DynamoDBv2;
 using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.RuntimeSupport;
+
+var dynamodb = new AmazonDynamoDBClient();
 
 await LambdaBootstrapBuilder
 	.Create<APIGatewayHttpApiV2ProxyRequest, APIGatewayHttpApiV2ProxyResponse>(
@@ -11,28 +14,33 @@ await LambdaBootstrapBuilder
 	.Build()
 	.RunAsync();
 
-static Task<APIGatewayHttpApiV2ProxyResponse> Handler(APIGatewayHttpApiV2ProxyRequest request)
+async Task<APIGatewayHttpApiV2ProxyResponse> Handler(APIGatewayHttpApiV2ProxyRequest request, ILambdaContext context)
 {
-	string name = request?.RawPath.TrimStart('/') switch
+	if (request.RouteKey == "POST /api/message")
 	{
-		{ Length: > 0 } path => path,
-		_ => "World",
-	};
+		return new() { StatusCode = 200, Body = "message stored" };
+	}
+	if (request.RouteKey == "DELETE /api/message/{id}")
+	{
+		return new() { StatusCode = 200, Body = "message destroyed" };
+	}
 
-	return Task.FromResult(new APIGatewayHttpApiV2ProxyResponse
-	{
-		StatusCode = 200,
-		Body = $"Hello, {name}!",
-	});
+	throw new NotImplementedException();
 }
 
-[JsonSerializable(typeof(APIGatewayHttpApiV2ProxyRequest))]
-[JsonSerializable(typeof(APIGatewayHttpApiV2ProxyResponse))]
-[JsonSourceGenerationOptions(PropertyNameCaseInsensitive = true)]
-internal partial class JsonContext : JsonSerializerContext { }
+internal record NewMessageRequest(
+	string Id,
+	string Ciphertext,
+	string Iv
+);
 
-internal class LambdaSerializer : ILambdaSerializer
+internal partial class LambdaSerializer : ILambdaSerializer
 {
+	[JsonSerializable(typeof(APIGatewayHttpApiV2ProxyRequest))]
+	[JsonSerializable(typeof(APIGatewayHttpApiV2ProxyResponse))]
+	[JsonSourceGenerationOptions(PropertyNameCaseInsensitive = true)]
+	private partial class JsonContext : JsonSerializerContext { }
+
 	public T Deserialize<T>(Stream requestStream)
 	{
 		return (T)(object)JsonSerializer.Deserialize(
