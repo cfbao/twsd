@@ -4,9 +4,8 @@ resource "aws_cloudfront_distribution" "main" {
     var.domain_name,
   ]
 
-  enabled             = true
-  is_ipv6_enabled     = true
-  default_root_object = "index.html"
+  enabled         = true
+  is_ipv6_enabled = true
 
   ordered_cache_behavior {
     path_pattern           = "/api/*"
@@ -23,6 +22,10 @@ resource "aws_cloudfront_distribution" "main" {
     cached_methods         = ["GET", "HEAD"]
     viewer_protocol_policy = "redirect-to-https"
     cache_policy_id        = data.aws_cloudfront_cache_policy.caching_optimized.id
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.s3_path_rewrite.arn
+    }
   }
 
   origin {
@@ -66,6 +69,12 @@ resource "aws_cloudfront_origin_access_control" "s3_access" {
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"
   signing_protocol                  = "sigv4"
+}
+
+resource "aws_cloudfront_function" "s3_path_rewrite" {
+  name    = "${var.service_name}-s3-path-rewrite"
+  runtime = "cloudfront-js-1.0"
+  code    = file("${path.module}/s3-path-rewrite.js")
 }
 
 data "aws_cloudfront_cache_policy" "caching_disabled" {

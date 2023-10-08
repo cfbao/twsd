@@ -1,4 +1,4 @@
-import { base64Decode, stringDigest } from "./common.js";
+import { base64Decode, stringDigest } from "./util.js";
 
 init();
 

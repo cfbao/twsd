@@ -1,4 +1,4 @@
-import { base64Encode, stringDigest } from "./common.js";
+import { base64Encode, stringDigest } from "./util.js";
 
 const submitButton = /** @type {HTMLButtonElement} */ (
 	document.getElementById("submit")
