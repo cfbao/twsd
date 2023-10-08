@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  backend:
+  ui:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
@@ -26,4 +26,13 @@ jobs:
 
       - name: deploy
         working-directory: ui
-        run: aws s3 sync . s3://twsd/ --delete
+        run: |
+          aws s3 sync . s3://twsd/ --delete
+          distributionId=$(
+            aws cloudfront list-distributions \
+            --no-paginate \
+            --query "DistributionList.Items[?Comment == 'twsd'].Id" \
+            --output text)
+          aws cloudfront create-invalidation \
+            --distribution-id "$distributionId" \
+            --paths "/*"
