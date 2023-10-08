@@ -53,6 +53,16 @@ data "aws_iam_policy_document" "lambda_permissions" {
       "${aws_cloudwatch_log_group.api.arn}:log-stream:*",
     ]
   }
+
+  statement {
+    actions = [
+      "dynamodb:DeleteItem",
+      "dynamodb:PutItem",
+    ]
+    resources = [
+      aws_dynamodb_table.messages.arn,
+    ]
+  }
 }
 
 resource "aws_cloudwatch_log_group" "api" {
