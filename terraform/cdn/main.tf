@@ -62,7 +62,7 @@ resource "aws_cloudfront_distribution" "main" {
 }
 
 resource "aws_cloudfront_origin_access_control" "s3_access" {
-  name                              = "s3"
+  name                              = "${var.service_name}-s3"
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"
   signing_protocol                  = "sigv4"
