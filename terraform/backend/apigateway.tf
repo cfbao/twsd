@@ -16,14 +16,14 @@ resource "aws_apigatewayv2_stage" "api_default" {
 
 resource "aws_apigatewayv2_route" "api_post_message" {
   api_id    = aws_apigatewayv2_api.api.id
-  route_key = "POST /api/message"
+  route_key = "POST /api/messages"
 
   target = "integrations/${aws_apigatewayv2_integration.api_lambda.id}"
 }
 
 resource "aws_apigatewayv2_route" "api_take_message" {
   api_id    = aws_apigatewayv2_api.api.id
-  route_key = "DELETE /api/message/{id}"
+  route_key = "DELETE /api/messages/{id}"
 
   target = "integrations/${aws_apigatewayv2_integration.api_lambda.id}"
 }

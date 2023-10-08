@@ -22,12 +22,21 @@ async function generateLink() {
 
 	const messageId = await stringDigest(urlSafeKey);
 
-	// sending to backend
-	console.log({
-		id: messageId,
-		ciphertext: encryptedData.ciphertext,
-		iv: encryptedData.iv,
-	});
+	/** @type {Response?} */
+	let res = null;
+	try {
+		res = await fetch("/api/messages", {
+			method: "POST",
+			body: JSON.stringify({
+				id: messageId,
+				ciphertext: encryptedData.ciphertext,
+				iv: encryptedData.iv,
+			}),
+		});
+	} catch {}
+	if (!res?.ok) {
+		return;
+	}
 
 	const keyDisplay = /** @type {HTMLDivElement} */ (
 		document.getElementById("generatedUrl")

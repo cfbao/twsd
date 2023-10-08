@@ -16,7 +16,7 @@ internal static partial class Handler
 
 	public static async Task<APIGatewayHttpApiV2ProxyResponse> Handle(APIGatewayHttpApiV2ProxyRequest request)
 	{
-		if (request.RouteKey == "POST /api/message")
+		if (request.RouteKey == "POST /api/messages")
 		{
 			var encryptedMessage = JsonSerializer.Deserialize(request.Body, RequestJsonContext.Default.EncryptedMessage)!;
 			await dynamodb.PutItemAsync(new()
@@ -33,7 +33,7 @@ internal static partial class Handler
 			return new() { StatusCode = 200 };
 		}
 
-		if (request.RouteKey == "DELETE /api/message/{id}")
+		if (request.RouteKey == "DELETE /api/messages/{id}")
 		{
 			if (!request.PathParameters.TryGetValue("id", out string? id) || string.IsNullOrEmpty(id))
 			{
