@@ -19,6 +19,13 @@ variable "api_gateway_url" {
   type = string
 }
 
+variable "ui" {
+  type = object({
+    bucket_domain_name     = string
+    bucket_access_identity = string
+  })
+}
+
 terraform {
   required_providers {
     aws = {}

@@ -4,15 +4,25 @@ resource "aws_cloudfront_distribution" "main" {
     var.domain_name,
   ]
 
-  enabled         = true
-  is_ipv6_enabled = true
+  enabled             = true
+  is_ipv6_enabled     = true
+  default_root_object = "index.html"
 
-  default_cache_behavior {
+  ordered_cache_behavior {
+    path_pattern           = "/api/*"
     target_origin_id       = "api"
     allowed_methods        = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
     cached_methods         = ["GET", "HEAD"]
     viewer_protocol_policy = "redirect-to-https"
-    cache_policy_id        = data.aws_cloudfront_cache_policy.cache_disabled.id
+    cache_policy_id        = data.aws_cloudfront_cache_policy.caching_disabled.id
+  }
+
+  default_cache_behavior {
+    target_origin_id       = "ui"
+    allowed_methods        = ["GET", "HEAD"]
+    cached_methods         = ["GET", "HEAD"]
+    viewer_protocol_policy = "redirect-to-https"
+    cache_policy_id        = data.aws_cloudfront_cache_policy.caching_optimized.id
   }
 
   origin {
@@ -24,6 +34,15 @@ resource "aws_cloudfront_distribution" "main" {
       https_port             = 443
       origin_protocol_policy = "https-only"
       origin_ssl_protocols   = ["TLSv1.2"]
+    }
+  }
+
+  origin {
+    origin_id   = "ui"
+    domain_name = var.ui.bucket_domain_name
+
+    s3_origin_config {
+      origin_access_identity = var.ui.bucket_access_identity
     }
   }
 
@@ -45,6 +64,10 @@ resource "aws_cloudfront_distribution" "main" {
   ]
 }
 
-data "aws_cloudfront_cache_policy" "cache_disabled" {
+data "aws_cloudfront_cache_policy" "caching_disabled" {
   name = "Managed-CachingDisabled"
+}
+
+data "aws_cloudfront_cache_policy" "caching_optimized" {
+  name = "Managed-CachingOptimized"
 }
