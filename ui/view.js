@@ -1,4 +1,4 @@
-import { base64Decode, stringDigest } from "./util.js";
+import { urlSafeBase64Decode, stringDigest } from "./util.js";
 
 init();
 
@@ -9,17 +9,25 @@ async function init() {
 		return;
 	}
 
-	const urlSafeKey = location.hash.substring(1, hashLength);
+	const key = location.hash.substring(1, hashLength);
+	const messageId = await stringDigest(key);
 
-	const messageId = await stringDigest(urlSafeKey);
+	/** @type {Response?} */
+	let res = null;
+	try {
+		res = await fetch(`/api/messages/${messageId}`, { method: "DELETE" });
+	} catch {}
+	if (!res?.ok) {
+		return;
+	}
 
-	// use messageId to get ciphertext & iv
-	console.log(messageId);
+	/** @type {{id: string; iv: string; ciphertext: string;}} */
+	const encryptedMessage = await res.json();
 
 	const plaintext = await decrypt({
-		ciphertext: "",
-		key: urlSafeKey.replaceAll("-", "+").replaceAll("_", "/"),
-		iv: "",
+		ciphertext: encryptedMessage.ciphertext,
+		key: key,
+		iv: encryptedMessage.iv,
 	});
 
 	const messageDisplay = /** @type {HTMLTextAreaElement} */ (
@@ -36,9 +44,9 @@ async function init() {
  * }} data
  */
 async function decrypt(data) {
-	const ciphertext = base64Decode(data.ciphertext);
-	const key = base64Decode(data.key);
-	const iv = base64Decode(data.iv);
+	const ciphertext = urlSafeBase64Decode(data.ciphertext);
+	const key = urlSafeBase64Decode(data.key);
+	const iv = urlSafeBase64Decode(data.iv);
 
 	const decryptKey = await crypto.subtle.importKey(
 		"raw",

@@ -1,4 +1,4 @@
-import { base64Encode, stringDigest } from "./util.js";
+import { urlSafeBase64Encode, stringDigest } from "./util.js";
 
 const submitButton = /** @type {HTMLButtonElement} */ (
 	document.getElementById("submit")
@@ -14,13 +14,7 @@ async function generateLink() {
 	}
 	const encryptedData = await encrypt(messageElement.value);
 
-	const urlSafeKey = encryptedData.key
-		// base64 encoded 256-bit data always ends with a single "="
-		.substring(0, encryptedData.key.length - 1)
-		.replaceAll("+", "-")
-		.replaceAll("/", "_");
-
-	const messageId = await stringDigest(urlSafeKey);
+	const messageId = await stringDigest(encryptedData.key);
 
 	/** @type {Response?} */
 	let res = null;
@@ -41,7 +35,7 @@ async function generateLink() {
 	const keyDisplay = /** @type {HTMLDivElement} */ (
 		document.getElementById("generatedUrl")
 	);
-	keyDisplay.innerText = `${window.location.protocol}//${window.location.host}/view#${urlSafeKey}`;
+	keyDisplay.innerText = `${window.location.protocol}//${window.location.host}/view#${encryptedData.key}`;
 }
 
 /**
@@ -64,8 +58,8 @@ export async function encrypt(plaintext) {
 	const exportedKey = await crypto.subtle.exportKey("raw", key);
 
 	return {
-		ciphertext: base64Encode(new Uint8Array(encryptedData)),
-		key: base64Encode(new Uint8Array(exportedKey)),
-		iv: base64Encode(iv),
+		ciphertext: urlSafeBase64Encode(new Uint8Array(encryptedData)),
+		key: urlSafeBase64Encode(new Uint8Array(exportedKey)),
+		iv: urlSafeBase64Encode(iv),
 	};
 }
