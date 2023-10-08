@@ -38,12 +38,9 @@ resource "aws_cloudfront_distribution" "main" {
   }
 
   origin {
-    origin_id   = "ui"
-    domain_name = var.ui.bucket_domain_name
-
-    s3_origin_config {
-      origin_access_identity = var.ui.bucket_access_identity
-    }
+    origin_id                = "ui"
+    domain_name              = var.ui_bucket_domain_name
+    origin_access_control_id = aws_cloudfront_origin_access_control.s3_access.id
   }
 
   viewer_certificate {
@@ -62,6 +59,13 @@ resource "aws_cloudfront_distribution" "main" {
   depends_on = [
     aws_acm_certificate_validation.main,
   ]
+}
+
+resource "aws_cloudfront_origin_access_control" "s3_access" {
+  name                              = "s3"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
 }
 
 data "aws_cloudfront_cache_policy" "caching_disabled" {

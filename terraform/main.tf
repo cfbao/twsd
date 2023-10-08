@@ -54,7 +54,8 @@ module "backend" {
 module "ui" {
   source = "./ui"
 
-  service_name = local.service_name
+  service_name                = local.service_name
+  cloudfront_distribution_arn = module.cdn.cloudfront_distribution_arn
 }
 
 module "cdn" {
@@ -64,12 +65,9 @@ module "cdn" {
     aws = aws.us-east-1
   }
 
-  service_name    = local.service_name
-  domain_name     = local.domain_name
-  dns_zone        = data.aws_route53_zone.dns_zone
-  api_gateway_url = module.backend.api_gateway_url
-  ui = {
-    bucket_domain_name     = module.ui.bucket_domain_name
-    bucket_access_identity = module.ui.cloudfront_bucket_access_identity
-  }
+  service_name          = local.service_name
+  domain_name           = local.domain_name
+  dns_zone              = data.aws_route53_zone.dns_zone
+  api_gateway_url       = module.backend.api_gateway_url
+  ui_bucket_domain_name = module.ui.bucket_domain_name
 }

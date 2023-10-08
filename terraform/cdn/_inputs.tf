@@ -19,11 +19,8 @@ variable "api_gateway_url" {
   type = string
 }
 
-variable "ui" {
-  type = object({
-    bucket_domain_name     = string
-    bucket_access_identity = string
-  })
+variable "ui_bucket_domain_name" {
+  type = string
 }
 
 terraform {
