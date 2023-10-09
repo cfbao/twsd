@@ -18,6 +18,12 @@ internal static partial class Handler
 	{
 		if (request.RouteKey == "POST /api/messages")
 		{
+			if (!request.Headers.TryGetValue("content-type", out string? contentType)
+				|| contentType != "application/json")
+			{
+				return new() { StatusCode = 415 };
+			}
+
 			var encryptedMessage = JsonSerializer.Deserialize(request.Body, RequestJsonContext.Default.EncryptedMessage)!;
 			await dynamodb.PutItemAsync(new()
 			{
@@ -35,6 +41,10 @@ internal static partial class Handler
 
 		if (request.RouteKey == "DELETE /api/messages/{id}")
 		{
+			if (request.Headers.TryGetValue("accept", out string? accept) && accept != "application/json")
+			{
+				return new() { StatusCode = 406 };
+			}
 			if (!request.PathParameters.TryGetValue("id", out string? id) || string.IsNullOrEmpty(id))
 			{
 				return new() { StatusCode = 404 };

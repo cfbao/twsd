@@ -21,6 +21,7 @@ async function generateLink() {
 	try {
 		res = await fetch("/api/messages", {
 			method: "POST",
+			headers: { "content-type": "application/json" },
 			body: JSON.stringify({
 				id: messageId,
 				ciphertext: encryptedData.ciphertext,
