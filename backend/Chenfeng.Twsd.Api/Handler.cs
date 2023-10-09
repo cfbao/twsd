@@ -5,16 +5,15 @@ using Amazon.Lambda.APIGatewayEvents;
 
 namespace Chenfeng.Twsd.Api;
 
-internal static partial class Handler
+internal partial class Handler(IAmazonDynamoDB dynamodb)
 {
 	private const string TableName = "twsd-messages";
 	private const string IdAttribute = "Id";
 	private const string IvAttribute = "Iv";
 	private const string CiphertextAttribute = "Ciphertext";
 	private const string ExpiresAtAttribute = "ExpiresAt";
-	private static readonly AmazonDynamoDBClient dynamodb = new();
 
-	public static async Task<APIGatewayHttpApiV2ProxyResponse> Handle(APIGatewayHttpApiV2ProxyRequest request)
+	public async Task<APIGatewayHttpApiV2ProxyResponse> Handle(APIGatewayHttpApiV2ProxyRequest request)
 	{
 		if (request.RouteKey == "POST /api/messages")
 		{
