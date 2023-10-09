@@ -33,10 +33,11 @@ async function generateLink() {
 		return;
 	}
 
-	const keyDisplay = /** @type {HTMLDivElement} */ (
+	const keyDisplay = /** @type {HTMLTextAreaElement} */ (
 		document.getElementById("generatedUrl")
 	);
-	keyDisplay.innerText = `${window.location.protocol}//${window.location.host}/view#${encryptedData.key}`;
+	keyDisplay.value = `${window.location.protocol}//${window.location.host}/view#${encryptedData.key}`;
+	keyDisplay.style.display = "block";
 }
 
 /**

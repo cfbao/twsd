@@ -4,17 +4,20 @@
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<script type="module" src="index.js"></script>
-	<link rel="stylesheet" href="index.css" />
+	<link rel="stylesheet" href="styles.css" />
 	<title>One Time Message</title>
 </head>
 
 <body>
 	<main>
-		<label for="message">Your secure message</label>
-		<textarea id="message" maxlength="399000" rows="20" autofocus required></textarea>
-		<button id="submit">Send One Time Message</button>
+		<div class="mv">
+			<label for="message" class="t">Your secure message</label>
+		</div>
 
-		<div id="generatedUrl"></div>
+		<textarea id="message" maxlength="300000" rows="10" autofocus class="t mv"></textarea>
+		<button id="submit" class="t mv">Send One Time Message</button>
+
+		<textarea id="generatedUrl" readonly class="t mv" style="display: none;"></textarea>
 	</main>
 </body>
 
