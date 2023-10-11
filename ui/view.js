@@ -30,10 +30,11 @@ async function init() {
 		iv: encryptedMessage.iv,
 	});
 
-	const messageDisplay = /** @type {HTMLTextAreaElement} */ (
+	const messageDisplay = /** @type {HTMLParagraphElement} */ (
 		document.getElementById("message")
 	);
-	messageDisplay.value = plaintext;
+	messageDisplay.innerText = plaintext;
+	messageDisplay.classList.replace("h", "f");
 }
 
 /**

@@ -11,12 +11,12 @@ textarea {
 	width: 100%;
 	padding: 16px;
 	box-sizing: border-box;
+	border: 2px solid #9E9E9E;
+	border-radius: 8px;
 }
 
 button {
-	min-height: 48px;
-	display: block;
-	border-radius: 8px;
+	line-height: 48px;
 }
 
 .t {
@@ -27,4 +27,20 @@ button {
 .mv {
 	margin-top: 16px;
 	margin-bottom: 16px;
+}
+
+.h {
+	display: none;
+}
+
+.b {
+	border: 2px solid #9E9E9E;
+	border-radius: 8px;
+}
+
+.f {
+	background-color: #EEEEEE;
+	padding: 16px;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
 }
