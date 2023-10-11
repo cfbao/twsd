@@ -1,14 +1,25 @@
+body {
+	background-color: #212121;
+	margin: 0;
+}
+
 main {
-	max-width: 600px;
+	max-width: 800px;
 	padding-left: 16px;
 	padding-right: 16px;
 	margin-left: auto;
 	margin-right: auto;
+	margin-top: 16px;
+	margin-bottom: 16px;
+	min-height: calc(100svh - 32px);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 }
 
 textarea {
 	display: block;
-	width: 100%;
 	padding: 16px;
 	box-sizing: border-box;
 	border: 2px solid #9E9E9E;
@@ -17,30 +28,129 @@ textarea {
 
 button {
 	line-height: 48px;
+	background-color: #EEEEEE;
 }
 
-.t {
+button:hover {
+	background-color: #E0E0E0;
+}
+
+button:active {
+	background-color: #F5F5F5;
+}
+
+button:not(:first-child) {
+	margin-left: 16px;
+}
+
+.txt {
 	font-family: system-ui;
 	font-size: 20px;
 }
 
-.mv {
+.margin-v {
 	margin-top: 16px;
 	margin-bottom: 16px;
 }
 
-.h {
+.margin-v:first-child {
+	margin-top: 0;
+}
+
+.margin-v:last-child {
+	margin-bottom: 0;
+}
+
+.hide {
 	display: none;
 }
 
-.b {
+.full-width {
+	width: 100%;
+}
+
+.border {
 	border: 2px solid #9E9E9E;
 	border-radius: 8px;
 }
 
-.f {
+.framed {
 	background-color: #EEEEEE;
 	padding: 16px;
 	white-space: pre-wrap;
 	overflow-wrap: break-word;
+}
+
+.flex {
+	display: flex;
+}
+
+#loader {
+	width: 48px;
+	height: 48px;
+	border: 8px solid #F5F5F5;
+	border-bottom-color: #1565C0;
+	border-radius: 50%;
+	box-sizing: border-box;
+	animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+	0% {
+		transform: rotate(0turn);
+	}
+
+	100% {
+		transform: rotate(1turn);
+	}
+}
+
+#snackbar-container {
+	position: fixed;
+	display: flex;
+	bottom: 24px;
+	width: 100%;
+	justify-content: center;
+}
+
+#snackbar {
+	padding: 12px;
+	border-radius: 4px;
+	color: white;
+	min-width: 280px;
+	text-align: center;
+}
+
+#snackbar.success {
+	background-color: #388E3C;
+	box-shadow: 2px 4px 4px RGB(163 229 163 / 20%);
+}
+
+#snackbar.error {
+	background-color: #D32F2F;
+	box-shadow: 2px 4px 4px RGB(229 163 163 / 20%);
+}
+
+#snackbar.show {
+	animation: fadein 0.5s, fadeout 0.5s 2.5s forwards;
+}
+
+@keyframes fadein {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes fadeout {
+	from {
+		opacity: 1;
+	}
+
+	to {
+		opacity: 0;
+	}
 }

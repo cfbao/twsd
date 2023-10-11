@@ -1,19 +1,48 @@
 import { urlSafeBase64Encode, stringDigest } from "./util.js";
 
-const submitButton = /** @type {HTMLButtonElement} */ (
-	document.getElementById("submit")
+const inputDiv = /** @type {HTMLDivElement} */ (
+	document.getElementById("input")
 );
-submitButton.addEventListener("click", generateLink);
+const messageElement = /** @type {HTMLTextAreaElement} */ (
+	document.getElementById("message")
+);
+const loader = /** @type {HTMLDivElement} */ (
+	document.getElementById("loader")
+);
+const resultDiv = /** @type {HTMLDivElement} */ (
+	document.getElementById("result")
+);
+const generatedUrlElem = /** @type {HTMLParagraphElement} */ (
+	document.getElementById("generated-url")
+);
+const snackbar = /** @type {HTMLDivElement} */ (
+	document.getElementById("snackbar")
+);
 
-async function generateLink() {
-	const messageElement = /** @type {HTMLTextAreaElement} */ (
-		document.getElementById("message")
-	);
+/** @type {HTMLButtonElement} */ (
+	document.getElementById("submit")
+).addEventListener("click", sendMessage);
+
+/** @type {HTMLButtonElement} */ (
+	document.getElementById("copy-url")
+).addEventListener("click", () => {
+	navigator.clipboard.writeText(generatedUrlElem.innerText);
+	showSnackBar("success", "Link copied to clipboard");
+});
+
+/** @type {HTMLButtonElement} */ (
+	document.getElementById("send-another")
+).addEventListener("click", reset);
+
+async function sendMessage() {
 	if (messageElement.value.length === 0) {
+		showSnackBar("error", "Please enter a message");
 		return;
 	}
-	const encryptedData = await encrypt(messageElement.value);
+	inputDiv.classList.add("hide");
+	loader.classList.remove("hide");
 
+	const encryptedData = await encrypt(messageElement.value);
 	const messageId = await stringDigest(encryptedData.key);
 
 	/** @type {Response?} */
@@ -30,20 +59,53 @@ async function generateLink() {
 		});
 	} catch {}
 	if (!res?.ok) {
+		showSnackBar(
+			"error",
+			"Failed to send the message. Please try again later.",
+		);
+		reset();
 		return;
 	}
 
-	const keyDisplay = /** @type {HTMLParagraphElement} */ (
-		document.getElementById("generatedUrl")
-	);
-	keyDisplay.innerText = `${window.location.protocol}//${window.location.host}/view#${encryptedData.key}`;
-	keyDisplay.classList.replace("h", "f");
+	generatedUrlElem.innerText = `${window.location.protocol}//${window.location.host}/view#${encryptedData.key}`;
+
+	messageElement.value = "";
+	loader.classList.add("hide");
+	resultDiv.classList.remove("hide");
+}
+
+function reset() {
+	resultDiv.classList.add("hide");
+	loader.classList.add("hide");
+
+	inputDiv.classList.remove("hide");
+	messageElement.focus();
+
+	generatedUrlElem.innerText = "";
+}
+
+/**
+ * @param {"success" | "error"} level
+ * @param {string} text
+ */
+function showSnackBar(level, text) {
+	snackbar.innerText = text;
+	snackbar.classList.remove("success", "error");
+	snackbar.classList.add(level);
+	snackbar.classList.add("show");
+	snackbar.classList.remove("hide");
+	setTimeout(() => {
+		snackbar.classList.add("hide");
+		snackbar.classList.remove("show");
+		snackbar.classList.remove(level);
+		snackbar.innerText = "";
+	}, 3000);
 }
 
 /**
  * @param {string} plaintext
  */
-export async function encrypt(plaintext) {
+async function encrypt(plaintext) {
 	const key = await crypto.subtle.generateKey(
 		{ name: "AES-GCM", length: 256 },
 		true,

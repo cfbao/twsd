@@ -3,24 +3,35 @@
 
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<script type="module" src="index.js?v=2"></script>
-	<link rel="stylesheet" href="styles.css?v=2" />
+	<script type="module" src="index.js?v=6"></script>
+	<link rel="stylesheet" href="styles.css?v=6" />
 	<title>One Time Message</title>
 </head>
 
 <body>
 	<main>
-		<div class="mv">
-			<label for="message" class="t">Your secure message</label>
+		<div id="input" class="full-width">
+			<textarea id="message" maxlength="300000" rows="13" autofocus class="txt margin-v full-width border"
+				placeholder="Enter your message here..."></textarea>
+			<div class="margin-v">
+				<button id="submit" class="txt border">Send One Time Message</button>
+			</div>
 		</div>
 
-		<textarea id="message" maxlength="300000" rows="13" autofocus class="t mv b"></textarea>
-		<div class="mv">
-			<button id="submit" class="t b">Send One Time Message</button>
-		</div>
+		<div id="loader" class="hide"></div>
 
-		<p id="generatedUrl" class="t mv b h"></p>
+		<div id="result" class="full-width hide">
+			<p id="generated-url" class="txt margin-v border framed"></p>
+			<div class="margin-v flex">
+				<button id="copy-url" class="txt border">Copy Link</button>
+				<button id="send-another" class="txt border">Send Another</button>
+			</div>
+		</div>
 	</main>
+
+	<div id="snackbar-container" class="flex">
+		<div id="snackbar" class="txt hide">Please enter a message</div>
+	</div>
 </body>
 
 </html>

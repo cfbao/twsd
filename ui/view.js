@@ -34,7 +34,8 @@ async function init() {
 		document.getElementById("message")
 	);
 	messageDisplay.innerText = plaintext;
-	messageDisplay.classList.replace("h", "f");
+	messageDisplay.classList.remove("hide");
+	messageDisplay.classList.add("framed");
 }
 
 /**
