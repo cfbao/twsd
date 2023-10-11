@@ -4,8 +4,9 @@ resource "aws_lambda_function" "api" {
   role          = aws_iam_role.api_lambda.arn
 
   # placeholder values only used for bootstrap
-  filename = data.archive_file.dummy_zip.output_path
-  handler  = "bootstrap"
+  filename    = data.archive_file.dummy_zip.output_path
+  handler     = "bootstrap"
+  memory_size = 1024
 
   lifecycle {
     ignore_changes = [
