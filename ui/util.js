@@ -16,6 +16,7 @@ export async function stringDigest(data) {
  * @param {Uint8Array} uint8Array
  */
 export function urlSafeBase64Encode(uint8Array) {
+	// TODO: chunk the array before calling `fromCodePoint`. The # of arguments to a function is limited
 	let base64String = btoa(String.fromCodePoint(...uint8Array));
 	const equalSignIndex = base64String.indexOf("=");
 	if (equalSignIndex >= 0) {

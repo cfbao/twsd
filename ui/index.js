@@ -113,10 +113,23 @@ async function encrypt(plaintext) {
 	);
 	const iv = crypto.getRandomValues(new Uint8Array(32));
 	const data = new TextEncoder().encode(plaintext);
+
+	// add random padding to obscure data length
+	let paddingLength = 0;
+	// ensure the padded data is at least 128 bytes to protect data length that's very small
+	while (paddingLength + data.length < 128) {
+		paddingLength = crypto.getRandomValues(new Uint8Array(1))[0];
+	}
+	const padding = crypto.getRandomValues(new Uint8Array(paddingLength));
+	const paddedData = new Uint8Array(1 + padding.length + data.length);
+	paddedData[0] = paddingLength;
+	paddedData.set(padding, 1);
+	paddedData.set(data, 1 + paddingLength);
+
 	const encryptedData = await crypto.subtle.encrypt(
 		{ name: "AES-GCM", iv },
 		key,
-		data,
+		paddedData,
 	);
 
 	const exportedKey = await crypto.subtle.exportKey("raw", key);

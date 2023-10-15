@@ -64,5 +64,6 @@ async function decrypt(data) {
 		ciphertext,
 	);
 
-	return new TextDecoder().decode(decryptedData);
+	const paddingLength = new Uint8Array(decryptedData.slice(0, 1))[0];
+	return new TextDecoder().decode(decryptedData.slice(1 + paddingLength));
 }
