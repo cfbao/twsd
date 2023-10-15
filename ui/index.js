@@ -6,22 +6,23 @@ const inputDiv = /** @type {HTMLDivElement} */ (
 const messageElement = /** @type {HTMLTextAreaElement} */ (
 	document.getElementById("message")
 );
+const submitButton = /** @type {HTMLButtonElement} */ (
+	document.getElementById("submit")
+);
 const loader = /** @type {HTMLDivElement} */ (
-	document.getElementById("loader")
+	document.getElementById("loader-container")
 );
 const resultDiv = /** @type {HTMLDivElement} */ (
 	document.getElementById("result")
 );
-const generatedUrlElem = /** @type {HTMLParagraphElement} */ (
+const generatedUrlElem = /** @type {HTMLDivElement} */ (
 	document.getElementById("generated-url")
 );
 const snackbar = /** @type {HTMLDivElement} */ (
 	document.getElementById("snackbar")
 );
 
-/** @type {HTMLButtonElement} */ (
-	document.getElementById("submit")
-).addEventListener("click", sendMessage);
+submitButton.addEventListener("click", sendMessage);
 
 /** @type {HTMLButtonElement} */ (
 	document.getElementById("copy-url")
@@ -39,8 +40,8 @@ async function sendMessage() {
 		showSnackBar("error", "Please enter a message");
 		return;
 	}
-	inputDiv.classList.add("hide");
-	loader.classList.remove("hide");
+	submitButton.classList.add("invisible");
+	loader.classList.add("show");
 
 	const encryptedData = await encrypt(messageElement.value);
 	const messageId = await stringDigest(encryptedData.key);
@@ -67,16 +68,18 @@ async function sendMessage() {
 		return;
 	}
 
-	generatedUrlElem.innerText = `${window.location.protocol}//${window.location.host}/view#${encryptedData.key}`;
-
+	inputDiv.classList.add("hide");
 	messageElement.value = "";
-	loader.classList.add("hide");
+	loader.classList.remove("show");
+
+	generatedUrlElem.innerText = `${window.location.protocol}//${window.location.host}/view#${encryptedData.key}`;
 	resultDiv.classList.remove("hide");
 }
 
 function reset() {
+	loader.classList.remove("show");
+	submitButton.classList.remove("invisible");
 	resultDiv.classList.add("hide");
-	loader.classList.add("hide");
 
 	inputDiv.classList.remove("hide");
 	messageElement.focus();

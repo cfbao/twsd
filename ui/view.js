@@ -1,11 +1,19 @@
 import { urlSafeBase64Decode, stringDigest } from "./util.js";
 
+const nothingNotice = /** @type {HTMLDivElement} */ (
+	document.getElementById("nothing")
+);
+const messageDisplay = /** @type {HTMLDivElement} */ (
+	document.getElementById("message")
+);
+
 init();
 
 async function init() {
 	const hashLength = location.hash.length;
 	if (hashLength !== 44 || !location.hash.startsWith("#")) {
-		console.log("invalid hash");
+		messageDisplay.classList.add("hide");
+		nothingNotice.classList.remove("hide");
 		return;
 	}
 
@@ -18,6 +26,8 @@ async function init() {
 		res = await fetch(`/api/messages/${messageId}`, { method: "DELETE" });
 	} catch {}
 	if (!res?.ok) {
+		messageDisplay.classList.add("hide");
+		nothingNotice.classList.remove("hide");
 		return;
 	}
 
@@ -30,9 +40,7 @@ async function init() {
 		iv: encryptedMessage.iv,
 	});
 
-	const messageDisplay = /** @type {HTMLParagraphElement} */ (
-		document.getElementById("message")
-	);
+	nothingNotice.classList.add("hide");
 	messageDisplay.innerText = plaintext;
 	messageDisplay.classList.remove("hide");
 	messageDisplay.classList.add("framed");

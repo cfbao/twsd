@@ -3,9 +3,12 @@
 
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<script type="module" src="index.js?v=7"></script>
-	<link rel="stylesheet" href="styles.css?v=7" />
-	<title>One Time Message</title>
+	<script type="importmap">{"imports":{
+		"/util.js": "/util.js?v=9"
+	}}</script>
+	<script type="module" src="index.js?v=9"></script>
+	<link rel="stylesheet" href="styles.css?v=9" />
+	<title>Send One Time Message</title>
 </head>
 
 <body>
@@ -13,15 +16,30 @@
 		<div id="input" class="full-width">
 			<textarea id="message" maxlength="300000" rows="13" autofocus class="txt margin-v full-width border"
 				placeholder="Enter your message here..."></textarea>
-			<div class="margin-v">
-				<button id="submit" class="txt border">Send One Time Message</button>
+			<div class="margin-v two-ends">
+				<div class="position-anchor">
+					<button id="submit" class="txt border">Send One Time Message</button>
+					<div id="loader-container">
+						<div class="loader"></div>
+					</div>
+				</div>
+				<a href="https://github.com/cfbao/twsd">
+					<svg id="help">
+						<g>
+							<path
+								d="m 23.851667,14.524175 c 2.220305,0 3.554177,1.184355 3.554177,3.18214 0,3.628351 -6.476723,4.628442 -6.476723,9.031994 0,1.184355 0.775174,2.478716 2.367455,2.478716 2.442827,0 2.147344,-1.813577 3.036188,-3.110362 1.183101,-1.738205 6.699231,-3.588868 6.699231,-8.401547 0,-5.217024 -4.661949,-7.402654 -9.400453,-7.402654 -4.513601,0 -8.661154,3.220425 -8.661154,6.848776 0,1.479809 1.111351,2.257393 2.406938,2.257393 3.587684,0.0012 1.738219,-4.884456 6.474341,-4.884456 z" />
+							<path
+								d="m 26.479914,34.660151 c 0,-1.666427 -1.369789,-3.03499 -3.034991,-3.03499 -1.665243,0 -3.03499,1.370903 -3.03499,3.03499 0,1.666442 1.369789,3.03499 3.03499,3.03499 1.66523,0 3.034991,-1.368534 3.034991,-3.03499 z" />
+							<path
+								d="M 48,24 C 48,10.766619 37.233381,0 24,0 10.766619,0 0,10.766619 0,24 0,37.233381 10.766619,48 24,48 37.233381,48 48,37.234565 48,24 Z M 2.392588,24 C 2.392588,12.086141 12.086141,2.392588 24,2.392588 35.913859,2.392588 45.607412,12.086141 45.607412,24 45.607412,35.913859 35.913859,45.607412 24,45.607412 12.086141,45.607412 2.392588,35.913859 2.392588,24 Z" />
+						</g>
+					</svg>
+				</a>
 			</div>
 		</div>
 
-		<div id="loader" class="hide"></div>
-
 		<div id="result" class="full-width hide">
-			<p id="generated-url" class="txt margin-v border framed"></p>
+			<div id="generated-url" class="txt margin-v border framed"></div>
 			<div class="margin-v flex">
 				<button id="copy-url" class="txt border">Copy Link</button>
 				<button id="send-another" class="txt border">Send Another</button>

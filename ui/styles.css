@@ -65,6 +65,10 @@ button:not(:first-child) {
 	display: none;
 }
 
+.invisible {
+	visibility: hidden;
+}
+
 .full-width {
 	width: 100%;
 }
@@ -85,7 +89,40 @@ button:not(:first-child) {
 	display: flex;
 }
 
-#loader {
+.two-ends {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.flex-end-end {
+	display: flex;
+	justify-content: end;
+	align-items: end;
+}
+
+.position-anchor {
+	position: relative;
+	width: fit-content;
+	height: fit-content;
+}
+
+#loader-container {
+	position: absolute;
+	left: 0;
+	top: 0;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	display: none;
+}
+
+#loader-container.show {
+	display: flex;
+}
+
+.loader {
 	width: 48px;
 	height: 48px;
 	border: 8px solid #F5F5F5;
@@ -153,4 +190,18 @@ button:not(:first-child) {
 	to {
 		opacity: 0;
 	}
+}
+
+#help {
+	width: 48px;
+	height: 48px;
+	fill: #616161;
+}
+
+#nothing {
+	color: #757575;
+}
+
+.filler {
+	flex: 1 1 0;
 }
