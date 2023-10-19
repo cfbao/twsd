@@ -43,7 +43,6 @@ async function init() {
 	nothingNotice.classList.add("hide");
 	messageDisplay.innerText = plaintext;
 	messageDisplay.classList.remove("hide");
-	messageDisplay.classList.add("framed");
 }
 
 /**
