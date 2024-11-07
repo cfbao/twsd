@@ -68,6 +68,8 @@ async function sendMessage() {
 		return;
 	}
 
+	console.log("松鼠要我加bug?!");
+
 	inputDiv.classList.add("hide");
 	messageElement.value = "";
 	loader.classList.remove("show");
