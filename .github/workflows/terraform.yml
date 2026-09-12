@@ -27,14 +27,14 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: hashicorp/setup-terraform@v2
+      - uses: hashicorp/setup-terraform@v4
         with:
-          terraform_version: ">=1.6.0 <2.0.0"
+          terraform_version: ">=1.16.0 <2.0.0"
           terraform_wrapper: false
 
-      - uses: aws-actions/configure-aws-credentials@v4
+      - uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-region: us-east-2
           role-to-assume: |
@@ -47,11 +47,11 @@ jobs:
       - name: plan
         if: github.ref != 'refs/heads/main' || inputs.command == 'plan'
         run: |
-          terraform init
-          terraform plan
+          terraform init 2>&1
+          terraform plan 2>&1
 
       - name: apply
         if: github.ref == 'refs/heads/main' && inputs.command != 'plan'
         run: |
-          terraform init -backend-config="dynamodb_table=terraform-state-lock"
-          terraform apply -auto-approve
+          terraform init 2>&1
+          terraform apply -auto-approve 2>&1
